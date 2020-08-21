@@ -6,8 +6,7 @@ client_id = "484226352191504384"
 RPC = Presence(client_id=client_id)
 RPC.connect()
 
-games = requests.get("http://api.hivemc.com/v1/game")
-gamesJson = games.json()
+gamesJson = requests.get("http://api.hivemc.com/v1/game").json()
 
 uuid = input("What is your UUID? (https://mcuuid.net/)")
 apiKey = input("What is your Hypixel API key? (api.hypixel.net)")
@@ -51,13 +50,12 @@ def getHiveGame(code):
 		return "Sleeping in the Land of Nod!"
 	if code in gamesJson:
 		return 'Playing ' + gamesJson[code]
-
+	if code == 'HUB':
+		return "Relaxing in a Regular Hub"
 	if 'BED' in code:
 		return 'Playing BedWars'
 	if 'SKY' in code:
 		return 'Playing SkyWars'
-	if code == 'HUB':
-		return "Relaxing in a Regular Hub"
 	elif code == 'PREMHUB':
 		return "Chilling in a Premium Hub"
 	
@@ -68,18 +66,16 @@ def getHypixelGame(code):
 		return "Playing " + hypixelGames[code]
 	return "Who? What? Where?"
 
-while 1:
+while True:
 	time.sleep(15) 
 
 	server = "HiveMC"
-	req = requests.get("http://api.hivemc.com/v1/player/" + uuid + "/status/raw")
-	jsonEek = req.json()
+	jsonEek = requests.get("http://api.hivemc.com/v1/player/" + uuid + "/status/raw").json()
 	location = jsonEek['status']
 	englishGame = getHiveGame(location)
 
 	if location == 'OFFLINE':
-		req = requests.get('https://api.hypixel.net/session?uuid=' + uuid + '&key=' + apiKey)
-		jsonEek = req.json()
+		jsonEek = requests.get('https://api.hypixel.net/session?uuid=' + uuid + '&key=' + apiKey).json()
 		location = jsonEek['session']
 		if location == None:
 			server = "Singleplayer"
